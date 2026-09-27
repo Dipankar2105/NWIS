@@ -42,7 +42,7 @@ class Settings(BaseSettings):
 
     # OCR
     OCR_PROVIDER: str = "gemini_vision"
-    OCR_LANGUAGES: List[str]
+    OCR_LANGUAGES: str | List[str]
     OCR_DPI: int = 300
     MAX_PAGES_PER_DOCUMENT: int = 50
 
@@ -50,11 +50,11 @@ class Settings(BaseSettings):
     RATE_LIMIT_PER_MINUTE: int = 30
 
     # CORS
-    CORS_ORIGINS: List[str]
+    CORS_ORIGINS: str | List[str]
 
     # File Upload
     MAX_UPLOAD_SIZE_MB: int = 25
-    ALLOWED_FILE_TYPES: List[str]
+    ALLOWED_FILE_TYPES: str | List[str]
     UPLOAD_DIR: str = "./uploads"
 
     # Alerts
@@ -64,7 +64,7 @@ class Settings(BaseSettings):
 
     # Risk Prediction
     RISK_MODEL_PATH: str = "./models/risk_model.pkl"
-    RISK_TYPES: List[str]
+    RISK_TYPES: str | List[str]
 
     @field_validator(
         "OCR_LANGUAGES", 
