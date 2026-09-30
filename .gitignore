@@ -29,3 +29,9 @@ extracted_las/
 *.zip
 *.tar.gz
 
+# Heavy ingested data stores — data lives in Supabase
+*_ingested_store.json
+
+# Legacy backend (not used in production)
+nwis-backend/
+

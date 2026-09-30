@@ -1,12 +1,35 @@
-# NWIS Integrated Backend Vercel Exclusions
+# ============================================================
+# NWIS Integrated Backend — Vercel Exclusions
+# Keeps only runtime Python code + requirements-vercel.txt
+# ============================================================
+
+# Heavy data stores & raw datasets
 data_sources/
 uploads/*
 !uploads/.gitkeep
+
+# Tests & dev tooling
 tests/
 .pytest_cache/
+scripts/
+migrations/
+
+# Documentation (not runtime)
+*.md
+
+# Heavy file types
 *.zip
 *.tar.gz
 *.xlsx
 *.las
 *.pdf
 *.pkl
+*.json
+!requirements-vercel.txt
+
+# Local envs
+.env
+.env.*
+!.env.example
+venv/
+__pycache__/

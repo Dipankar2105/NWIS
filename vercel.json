@@ -7,7 +7,11 @@
     },
     "nwis_integrated_backend": {
       "root": "NWIS_Integrated_Backend",
-      "framework": "fastapi"
+      "framework": "fastapi",
+      "config": {
+        "installCommand": "pip install -r requirements-vercel.txt",
+        "maxLambdaSize": "50mb"
+      }
     }
   },
   "rewrites": [

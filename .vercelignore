@@ -1,35 +1,41 @@
 # ============================================================
-# NWIS — Vercel Deployment Exclusions (.vercelignore)
-# Excludes heavy raw datasets, virtualenvs, and local artifacts
-# from entering the Vercel Serverless Function bundle.
+# NWIS — Root Vercel Deployment Exclusions (.vercelignore)
+# Excludes legacy backends, heavy data, and local artifacts.
 # ============================================================
 
-# Obsolete / Local virtual environment & backend backups
+# Legacy / redundant backend directories
 nwis-backend/
 app/
+
+# Local environments
 venv/
 .venv/
 env/
 __pycache__/
 *.pyc
 
-# Local data ingestion archives & heavy public datasets
-NWIS_Integrated_Backend/data_sources/force2020/LAS_files_Force_2020_all_wells_train_test_blind_hidden_final.zip
-NWIS_Integrated_Backend/data_sources/force2020/force2020_ingested_store.json
-NWIS_Integrated_Backend/data_sources/force2020/extracted_las/
+# All heavy data assets (Vercel Services will also apply
+# per-service .vercelignore in NWIS_Integrated_Backend/)
 NWIS_Integrated_Backend/data_sources/
 NWIS_Integrated_Backend/uploads/*
 !NWIS_Integrated_Backend/uploads/.gitkeep
 NWIS_Integrated_Backend/tests/
+NWIS_Integrated_Backend/scripts/
+NWIS_Integrated_Backend/migrations/
 NWIS_Integrated_Backend/.pytest_cache/
 
-# Local frontend build artifacts & node_modules
+# Frontend build artifacts & dev files
 NWIS_Frontend/node_modules/
 NWIS_Frontend/dist/
 NWIS_Frontend/Designs/
 NWIS_Frontend/*.py
 
-# Generic temporary files & logs
+# Documentation & plans (not runtime)
+*.md
+!NWIS_Frontend/README.md
+!NWIS_Integrated_Backend/README.md
+
+# Generic temp files & heavy binary formats
 .kilo/
 .git/
 .vscode/
