@@ -1,0 +1,12 @@
+# NWIS Integrated Backend Vercel Exclusions
+data_sources/
+uploads/*
+!uploads/.gitkeep
+tests/
+.pytest_cache/
+*.zip
+*.tar.gz
+*.xlsx
+*.las
+*.pdf
+*.pkl
