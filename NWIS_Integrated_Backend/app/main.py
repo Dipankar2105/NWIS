@@ -25,6 +25,9 @@ from app.routes import (
     query_history,
     system,
     voice,
+    audit,
+    reference_wells,
+    data_sources
 )
 
 
@@ -59,6 +62,7 @@ app.add_middleware(RequestLoggingMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,
+    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -78,6 +82,9 @@ app.include_router(analytics.router, prefix=f"{settings.API_PREFIX}/analytics", 
 app.include_router(query_history.router, prefix=f"{settings.API_PREFIX}/query-history", tags=["query-history"])
 app.include_router(system.router, prefix=f"{settings.API_PREFIX}/system", tags=["system"])
 app.include_router(voice.router, prefix=f"{settings.API_PREFIX}/voice", tags=["voice"])
+app.include_router(audit.router, prefix=f"{settings.API_PREFIX}/audit", tags=["audit"])
+app.include_router(reference_wells.router, prefix=f"{settings.API_PREFIX}", tags=["reference-wells"])
+app.include_router(data_sources.router, prefix=f"{settings.API_PREFIX}", tags=["data-sources"])
 
 
 @app.get("/", tags=["Root"])

@@ -113,11 +113,21 @@ class Settings(BaseSettings):
 
     @property
     def cors_origins_list(self) -> List[str]:
+        origins = []
         if isinstance(self.CORS_ORIGINS, list):
-            return self.CORS_ORIGINS
-        if not self.CORS_ORIGINS:
-            return ["*"]
-        return [origin.strip() for origin in self.CORS_ORIGINS.split(",") if origin.strip()]
+            origins = list(self.CORS_ORIGINS)
+        elif isinstance(self.CORS_ORIGINS, str) and self.CORS_ORIGINS:
+            origins = [origin.strip() for origin in self.CORS_ORIGINS.split(",") if origin.strip()]
+
+        default_dev_origins = [
+            "http://localhost:5173", "http://localhost:5174", "http://localhost:3000", "http://localhost:4173",
+            "http://127.0.0.1:5173", "http://127.0.0.1:5174", "http://127.0.0.1:3000", "http://127.0.0.1:8000",
+            "http://localhost:8000"
+        ]
+        for o in default_dev_origins:
+            if o not in origins:
+                origins.append(o)
+        return origins
 
     @property
     def allowed_file_types_list(self) -> List[str]:

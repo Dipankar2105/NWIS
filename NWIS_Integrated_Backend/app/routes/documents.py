@@ -203,27 +203,90 @@ async def get_document_chunks(
     return chunks
 
 
+from app.services.data_store import master_data_store
+
+
 @router.get("", response_model=List[DocumentStatusResponse])
 async def list_documents(
+    well_id: Optional[str] = None,
+    doc_type: Optional[str] = None,
+    source_type: Optional[str] = None,
+    search: Optional[str] = None,
     current_user: UserProfile = Depends(get_current_user)
 ):
     """
-    Lists all documents currently registered in the system.
+    Lists all documents currently registered in the system from both live uploads and the master repository.
     """
-    docs = document_repository.list_documents()
-    return [
-        DocumentStatusResponse(
-            document_id=d["document_id"],
+    repo_docs = document_repository.list_documents()
+    master_docs = master_data_store.documents
+    
+    seen_ids = set()
+    combined = []
+
+    # 1. First add live uploaded repo docs
+    for d in repo_docs:
+        doc_id = d["document_id"]
+        seen_ids.add(doc_id)
+        combined.append(DocumentStatusResponse(
+            document_id=doc_id,
             file_name=d.get("file_name"),
+            title=d.get("file_name", "Uploaded Document"),
+            doc_type="User Upload",
+            well_id=d.get("well_id"),
             processing_status=d["processing_status"],
-            page_count=d.get("page_count"),
-            chunk_count=d.get("chunk_count"),
+            page_count=d.get("page_count", 1),
+            chunk_count=d.get("chunk_count", 0),
             ocr_provider=d.get("ocr_provider"),
             embedding_provider=d.get("embedding_provider"),
             content_hash=d.get("content_hash"),
             error_message=d.get("error_message"),
             structured_data=d.get("structured_data"),
+            source_type="USER_UPLOADED",
+            source_name="User Uploaded Document",
             processed_at=d.get("processed_at")
-        )
-        for d in docs
-    ]
+        ))
+
+    # 2. Add master data store documents
+    for md in master_docs:
+        doc_id = md.get("id") or md.get("document_id")
+        if doc_id in seen_ids:
+            continue
+        seen_ids.add(doc_id)
+        combined.append(DocumentStatusResponse(
+            document_id=doc_id,
+            file_name=md.get("filename"),
+            title=md.get("title"),
+            doc_type=md.get("doc_type"),
+            well_id=md.get("well_id"),
+            well_name=md.get("well_name"),
+            field=md.get("field"),
+            formation=md.get("formation"),
+            source_type=md.get("source_type", "DEMO_SYNTHETIC"),
+            source_name=md.get("source_name", "NWIS Repository"),
+            source_url=md.get("source_url"),
+            file_size_bytes=md.get("file_size_bytes"),
+            processing_status=md.get("processing_status", "completed"),
+            page_count=md.get("page_count", 1),
+            chunk_count=md.get("page_count", 1) * 3,
+            processed_at=md.get("created_at")
+        ))
+
+    # Filter
+    filtered = []
+    for doc in combined:
+        if well_id and (not doc.well_id or doc.well_id.lower() != well_id.lower()):
+            continue
+        if doc_type and doc_type.lower() not in (doc.doc_type or "").lower():
+            continue
+        if source_type and source_type.upper() != (doc.source_type or "").upper():
+            continue
+        if search:
+            s = search.lower()
+            t = (doc.title or "").lower()
+            fn = (doc.file_name or "").lower()
+            wn = (doc.well_name or "").lower()
+            if s not in t and s not in fn and s not in wn:
+                continue
+        filtered.append(doc)
+
+    return filtered

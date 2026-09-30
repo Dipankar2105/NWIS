@@ -1,4 +1,4 @@
-﻿"""
+"""
 NWIS - Drilling Event Models
 """
 
@@ -22,6 +22,8 @@ class EventResponse(BaseModel):
     npt_hours: Optional[float] = None
     cost_impact: Optional[float] = None
     parameters: Optional[Dict[str, Any]] = None
+    source_type: Optional[str] = "DEMO_SYNTHETIC"
+    source_name: Optional[str] = "NWIS Synthetic Operational Layer"
     occurred_at: Optional[datetime] = None
 
 

@@ -128,7 +128,8 @@ class EvidenceStore:
         self.settings = get_settings()
 
     async def get_all_wells(self) -> List[Dict[str, Any]]:
-        """Returns list of all available wells."""
+        """Returns list of all available wells from master data store and Supabase."""
+        from app.services.data_store import master_data_store
         if self.settings.is_supabase_configured:
             try:
                 db = get_db()
@@ -136,8 +137,8 @@ class EvidenceStore:
                 if res.data:
                     return res.data
             except Exception as e:
-                logger.warning(f"Supabase wells query failed: {e}. Falling back to seed wells.")
-        return list(SEED_WELLS)
+                logger.warning(f"Supabase wells query failed: {e}. Falling back to master data store.")
+        return list(master_data_store.wells)
 
     async def find_nearby_wells(
         self,
@@ -182,10 +183,11 @@ class EvidenceStore:
 
     async def get_all_events(self) -> List[Dict[str, Any]]:
         """
-        Returns structured drilling events from both the database/seed store
+        Returns structured drilling events from both the master data store
         AND newly extracted events from processed documents in Phase 2.
         """
-        events = list(SEED_EVENTS)
+        from app.services.data_store import master_data_store
+        events = list(master_data_store.events)
 
         # Incorporate events from document repository extractions
         docs = document_repository.list_documents()

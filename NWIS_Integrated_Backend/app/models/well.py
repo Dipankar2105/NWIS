@@ -1,4 +1,4 @@
-﻿"""
+"""
 NWIS - Well Models
 """
 
@@ -16,6 +16,8 @@ class WellBase(BaseModel):
     latitude: float
     longitude: float
     total_depth_md: Optional[float] = None
+    source_type: Optional[str] = "DEMO_SYNTHETIC"
+    source_name: Optional[str] = "NWIS Synthetic Operational Layer"
 
 
 class WellCreate(WellBase):
@@ -48,6 +50,8 @@ class NearbyWellResponse(BaseModel):
     operational_area: str
     formation_tops: Optional[List[Dict[str, Any]]] = Field(default_factory=list)
     event_count: int = 0
+    source_type: Optional[str] = "DEMO_SYNTHETIC"
+    source_name: Optional[str] = "NWIS Synthetic Operational Layer"
 
 
 class WellListResponse(BaseModel):

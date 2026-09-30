@@ -21,3 +21,11 @@ htmlcov/
 
 .DS_Store
 Thumbs.db
+
+node_modules/
+dist/
+.kilo/
+extracted_las/
+*.zip
+*.tar.gz
+

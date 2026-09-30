@@ -171,7 +171,17 @@ class DocumentUploadResponse(BaseModel):
 class DocumentStatusResponse(BaseModel):
     document_id: str
     file_name: Optional[str] = None
-    processing_status: str
+    title: Optional[str] = None
+    doc_type: Optional[str] = None
+    well_id: Optional[str] = None
+    well_name: Optional[str] = None
+    field: Optional[str] = None
+    formation: Optional[str] = None
+    source_type: Optional[str] = "DEMO_SYNTHETIC"
+    source_name: Optional[str] = "NWIS Repository"
+    source_url: Optional[str] = None
+    file_size_bytes: Optional[int] = None
+    processing_status: str = "completed"
     page_count: Optional[int] = None
     chunk_count: Optional[int] = None
     ocr_provider: Optional[str] = None
