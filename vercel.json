@@ -1,0 +1,45 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "nwis_frontend": {
+      "root": "NWIS_Frontend",
+      "framework": "vite"
+    },
+    "nwis_integrated_backend": {
+      "root": "NWIS_Integrated_Backend",
+      "framework": "fastapi"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/v1/(.*)",
+      "destination": {
+        "service": "nwis_integrated_backend"
+      }
+    },
+    {
+      "source": "/health",
+      "destination": {
+        "service": "nwis_integrated_backend"
+      }
+    },
+    {
+      "source": "/docs",
+      "destination": {
+        "service": "nwis_integrated_backend"
+      }
+    },
+    {
+      "source": "/openapi.json",
+      "destination": {
+        "service": "nwis_integrated_backend"
+      }
+    },
+    {
+      "source": "/(.*)",
+      "destination": {
+        "service": "nwis_frontend"
+      }
+    }
+  ]
+}
