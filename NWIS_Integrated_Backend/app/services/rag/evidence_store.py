@@ -251,7 +251,8 @@ class EvidenceStore:
 
             # Check event type filter
             if types_lower:
-                if not any(t in ev_type for t in types_lower):
+                ev_t_norm = ev_type.lower().replace("_", " ")
+                if not any(t.lower().replace("_", " ") in ev_t_norm or ev_t_norm in t.lower().replace("_", " ") for t in types_lower):
                     continue
 
             # Check formation filter

@@ -23,13 +23,24 @@ except ImportError:
 
 KNOWN_FORMATIONS = [
     "Barail", "Tipam", "Kopili", "Girujan", "Sylhet", "Disang",
-    "Bhuban", "Bokabil", "Renji", "Jenam", "Laisong"
+    "Bhuban", "Bokabil", "Renji", "Jenam", "Laisong", "Alluvium", "Dihing"
 ]
 
-KNOWN_WELLS = [
-    "BORHOLLA-12", "BORHOLLA-14", "KHORAGHAT-7", "BARAMURA-9",
-    "NHK-421", "NHK-123", "BOR-08", "TEST-WELL-09"
-]
+def _get_known_wells() -> List[str]:
+    from app.services.data_store import master_data_store
+    ds_wells = [w["well_name"] for w in master_data_store.wells if w.get("well_name")] + [w["id"] for w in master_data_store.wells if w.get("id")]
+    base = [
+        "DUL-235", "DUL-123", "DUL-201", "DUL-198", "DUL-205",
+        "MOR-102", "NHK-401", "BORHOLLA-12", "BORHOLLA-14", "KHORAGHAT-7",
+        "BARAMURA-9", "NHK-421", "NHK-123", "BOR-08", "TEST-WELL-09"
+    ]
+    seen = set()
+    res = []
+    for w in base + ds_wells:
+        if w and w not in seen:
+            seen.add(w)
+            res.append(w)
+    return res
 
 EVENT_KEYWORD_MAP = {
     "lost_circulation": [r"\blost\s+circulation\b", r"\bcirculation\s+lost\b", r"\bmud\s+loss(?:es)?\b", r"\blosses\b"],
@@ -53,7 +64,7 @@ class DevelopmentQueryParser:
 
         # 1. Reference Well
         ref_well = None
-        for w in KNOWN_WELLS:
+        for w in _get_known_wells():
             if w.lower() in q_lower or w.replace("-", " ").lower() in q_lower:
                 ref_well = w
                 break
