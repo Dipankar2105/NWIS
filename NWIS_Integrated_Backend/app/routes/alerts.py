@@ -31,6 +31,22 @@ async def acknowledge_alert(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Alert '{alert_id}' not found."
         )
+
+    # Log audit entry
+    from app.services.data_store import master_data_store
+    import uuid
+    from datetime import datetime
+    master_data_store.audit_logs.append({
+        "id": f"AUD-{uuid.uuid4().hex[:8]}",
+        "timestamp": datetime.utcnow().isoformat(),
+        "user": current_user.email,
+        "action": "ALERT_ACKNOWLEDGED",
+        "target": alert_id,
+        "module": "Alerts",
+        "status": "success",
+        "details": f"Alert '{alert_id}' acknowledged by {current_user.email}"
+    })
+
     return alert
 
 

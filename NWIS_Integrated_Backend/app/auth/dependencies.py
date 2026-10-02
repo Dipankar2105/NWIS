@@ -19,7 +19,7 @@ from app.models.user import UserProfile
 DEV_MOCK_USER = UserProfile(
     id="dev-user-001",
     email="drilling.engineer@oilindia.in",
-    role="super_admin",
+    role="drilling_engineer",
     full_name="Senior Drilling Engineer",
     operational_areas=["Assam", "Tripura", "Rajasthan", "Gujarat"],
     is_active=True

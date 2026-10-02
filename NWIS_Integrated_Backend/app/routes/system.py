@@ -98,3 +98,93 @@ async def translate_text_endpoint(request: TranslationRequest):
         source_language=request.source_language,
         target_language=request.target_language
     )
+
+
+# System Settings Store (In-Memory for Runtime Operational Configuration)
+_SYSTEM_SETTINGS_CACHE = {
+    "rate_limit_per_minute": 30,
+    "alert_depth_window_meters": 300.0,
+    "alert_radius_km": 5.0,
+    "alert_min_probability": 0.4,
+    "max_upload_size_mb": 25,
+    "ocr_languages": ["en", "hi"],
+    "ocr_dpi": 300,
+    "max_pages_per_document": 50,
+    "last_updated": None
+}
+
+
+@router.get("/settings")
+async def get_system_settings():
+    """
+    Returns application operational settings and thresholds.
+    Excludes sensitive passwords, JWT secrets, and API keys.
+    """
+    settings = get_settings()
+    return {
+        "rate_limit_per_minute": getattr(settings, "RATE_LIMIT_PER_MINUTE", 30),
+        "alert_depth_window_meters": getattr(settings, "ALERT_DEPTH_WINDOW_METERS", 300.0),
+        "alert_radius_km": getattr(settings, "ALERT_RADIUS_KM", 5.0),
+        "alert_min_probability": getattr(settings, "ALERT_MIN_PROBABILITY", 0.4),
+        "max_upload_size_mb": getattr(settings, "MAX_UPLOAD_SIZE_MB", 25),
+        "mode": "supabase" if settings.is_supabase_configured else "demo_local",
+        "secrets_policy": "Environment / Secret Manager Based (Immutable at Runtime)",
+        "cache": _SYSTEM_SETTINGS_CACHE
+    }
+
+
+@router.put("/settings")
+async def update_system_settings(new_settings: dict):
+    """
+    Updates operational thresholds for the session.
+    Clearly reports persistence mode (demo_local vs supabase).
+    Server environment variables and secrets remain protected.
+    """
+    settings = get_settings()
+    from datetime import datetime
+    for k, v in new_settings.items():
+        if k in _SYSTEM_SETTINGS_CACHE and not k.startswith("secret") and not k.startswith("key"):
+            _SYSTEM_SETTINGS_CACHE[k] = v
+
+    _SYSTEM_SETTINGS_CACHE["last_updated"] = datetime.utcnow().isoformat()
+
+    # Log audit entry
+    from app.services.data_store import master_data_store
+    import uuid
+    master_data_store.audit_logs.append({
+        "id": f"AUD-{uuid.uuid4().hex[:8]}",
+        "timestamp": datetime.utcnow().isoformat(),
+        "user": "system_admin",
+        "action": "SYSTEM_SETTINGS_UPDATED",
+        "target": "SystemConfig",
+        "module": "System",
+        "status": "success",
+        "details": f"Settings updated (mode: {'supabase' if settings.is_supabase_configured else 'demo_local'})"
+    })
+
+    return {
+        "message": "System operational settings updated.",
+        "mode": "supabase" if settings.is_supabase_configured else "demo_local",
+        "settings": _SYSTEM_SETTINGS_CACHE
+    }
+
+
+@router.post("/settings/reset")
+async def reset_system_settings():
+    """Resets operational settings to system default thresholds."""
+    settings = get_settings()
+    from datetime import datetime
+    _SYSTEM_SETTINGS_CACHE.update({
+        "rate_limit_per_minute": 30,
+        "alert_depth_window_meters": 300.0,
+        "alert_radius_km": 5.0,
+        "alert_min_probability": 0.4,
+        "max_upload_size_mb": 25,
+        "last_updated": datetime.utcnow().isoformat()
+    })
+    return {
+        "message": "System settings reset to defaults.",
+        "mode": "supabase" if settings.is_supabase_configured else "demo_local",
+        "settings": _SYSTEM_SETTINGS_CACHE
+    }
+
