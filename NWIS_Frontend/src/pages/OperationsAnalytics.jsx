@@ -114,51 +114,31 @@ export default function OperationsAnalytics() {
     const docsIndexed = documents.length > 0 ? documents.length : (overview?.total_documents_processed || 5);
 
     // Event type distribution
-    const eventCounts = {
-      'Mud Loss': 0,
-      'High Torque': 0,
-      'Casing Issue': 0,
-      'Kick': 0,
-      'Pressure Anomaly': 0,
-      'Others': 0
-    };
-
+    const eventCounts = {};
     events.forEach(ev => {
-      const type = (ev.event_type || '').toLowerCase();
-      if (type.includes('loss')) eventCounts['Mud Loss']++;
-      else if (type.includes('torque')) eventCounts['High Torque']++;
-      else if (type.includes('casing')) eventCounts['Casing Issue']++;
-      else if (type.includes('kick')) eventCounts['Kick']++;
-      else if (type.includes('pressure')) eventCounts['Pressure Anomaly']++;
-      else eventCounts['Others']++;
+      const type = ev.event_type || 'Others';
+      eventCounts[type] = (eventCounts[type] || 0) + 1;
     });
 
-    // Ensure baseline percentages if events are small
-    const totalCounted = Object.values(eventCounts).reduce((a, b) => a + b, 0);
-    const eventPercentages = totalCounted > 0 ? {
-      'Mud Loss': Math.round((eventCounts['Mud Loss'] / totalCounted) * 100) || 32,
-      'High Torque': Math.round((eventCounts['High Torque'] / totalCounted) * 100) || 21,
-      'Casing Issue': Math.round((eventCounts['Casing Issue'] / totalCounted) * 100) || 18,
-      'Kick': Math.round((eventCounts['Kick'] / totalCounted) * 100) || 11,
-      'Pressure Anomaly': Math.round((eventCounts['Pressure Anomaly'] / totalCounted) * 100) || 7,
-      'Others': Math.round((eventCounts['Others'] / totalCounted) * 100) || 11
-    } : {
-      'Mud Loss': 32,
-      'High Torque': 21,
-      'Casing Issue': 18,
-      'Kick': 11,
-      'Pressure Anomaly': 7,
-      'Others': 11
-    };
+    const totalCounted = events.length;
+    let eventPercentages = null;
+    if (totalCounted > 0) {
+      eventPercentages = {};
+      Object.keys(eventCounts).forEach(k => {
+        eventPercentages[k] = Math.round((eventCounts[k] / totalCounted) * 100);
+      });
+    }
 
     // Fields grouping
-    const fieldsMap = {
-      'Duliajan': { active: 3, completed: 4, abandoned: 1 },
-      'Moran': { active: 1, completed: 2, abandoned: 1 },
-      'Nahorkatiya': { active: 1, completed: 1, abandoned: 1 },
-      'Bokajan': { active: 0, completed: 1, abandoned: 0 },
-      'Others': { active: 0, completed: 0, abandoned: 1 }
-    };
+    const fieldsMap = {};
+    filteredWells.forEach(w => {
+      const area = w.operational_area || w.field_name || 'Others';
+      if (!fieldsMap[area]) fieldsMap[area] = { active: 0, completed: 0, abandoned: 0 };
+      const status = (w.status || '').toLowerCase();
+      if (status.includes('drill') || status === 'active') fieldsMap[area].active++;
+      else if (status.includes('complet')) fieldsMap[area].completed++;
+      else fieldsMap[area].abandoned++;
+    });
 
     return {
       totalWells,

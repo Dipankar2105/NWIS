@@ -37,20 +37,14 @@ async def analyze_correlation(
     return await correlation_service.analyze_correlation(request)
 
 
-# Legacy formation correlation endpoint
+# Formation correlation endpoint
 @router.post("/correlation/formations")
 async def correlate_formations(
     payload: Dict[str, Any] = Body(...),
     current_user: UserProfile = Depends(get_current_user)
 ) -> Dict[str, Any]:
-    return {
-        "wells_correlated": payload.get("well_ids", []),
-        "correlation_matrix": {
-            "Barail Sand": {"BORHOLLA-12": 2410, "BORHOLLA-14": 2420},
-            "Kopili Shale": {"BORHOLLA-12": 2650, "BORHOLLA-14": 2662}
-        },
-        "common_formations": ["Barail Sand", "Kopili Shale"]
-    }
+    well_ids = payload.get("well_ids", [])
+    return await correlation_service.correlate_formations(well_ids)
 
 
 # ==============================================================================

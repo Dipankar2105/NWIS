@@ -246,8 +246,98 @@ class CorrelationService:
         )
 
     async def correlate_formations(self, well_ids: list) -> Dict[str, Any]:
-        """Legacy formation correlation helper."""
-        return {"wells": well_ids, "correlation_matrix": {}}
+        """
+        Genuinely functional cross-well correlation for selected wells.
+        Supports formation comparison, depth intervals, and event occurrence across wells.
+        """
+        from app.services.data_store import master_data_store
+        
+        # 1. Fetch relevant well and event data
+        selected_events = [e for e in master_data_store.events if e.get("well_id") in well_ids]
+        selected_wells = [w for w in master_data_store.wells if w.get("id") in well_ids]
+        
+        formation_map = {}
+        event_map = {}
+        
+        # 2. Extract formations and depths from events/wells
+        for ev in selected_events:
+            w_id = ev.get("well_id")
+            fmt = ev.get("formation", "Unknown")
+            if not fmt or fmt == "Unknown":
+                continue
+            
+            if fmt not in formation_map:
+                formation_map[fmt] = {}
+            if w_id not in formation_map[fmt]:
+                formation_map[fmt][w_id] = {
+                    "depth_from": float('inf'),
+                    "depth_to": -float('inf'),
+                    "event_count": 0,
+                    "event_types": set(),
+                    "parameters": {}
+                }
+            
+            f_data = formation_map[fmt][w_id]
+            depth = ev.get("depth", 0.0)
+            if depth > 0:
+                f_data["depth_from"] = min(f_data["depth_from"], depth)
+                f_data["depth_to"] = max(f_data["depth_to"], depth)
+            
+            f_data["event_count"] += 1
+            e_type = ev.get("event_type")
+            if e_type:
+                f_data["event_types"].add(e_type)
+                
+                # Track event correlation
+                if e_type not in event_map:
+                    event_map[e_type] = {"total_count": 0, "wells": set(), "formations": set()}
+                event_map[e_type]["total_count"] += 1
+                event_map[e_type]["wells"].add(w_id)
+                event_map[e_type]["formations"].add(fmt)
+                
+            # Grab some params if available
+            mw = ev.get("mud_weight")
+            if mw:
+                f_data["parameters"]["mud_weight"] = mw
+
+        # 3. Clean up the formation mapping for the response
+        correlation_matrix = {}
+        common_formations = []
+        
+        for fmt, w_data in formation_map.items():
+            # Check if this formation exists in all selected wells
+            if len(w_data.keys()) == len(well_ids) and len(well_ids) > 1:
+                common_formations.append(fmt)
+                
+            # Format output
+            matrix_entry = {}
+            for w, data in w_data.items():
+                matrix_entry[w] = {
+                    "depth_range": [data["depth_from"] if data["depth_from"] != float('inf') else None, 
+                                    data["depth_to"] if data["depth_to"] != -float('inf') else None],
+                    "event_count": data["event_count"],
+                    "event_types": list(data["event_types"]),
+                    "available_parameters": data["parameters"]
+                }
+            correlation_matrix[fmt] = matrix_entry
+
+        # 4. Format event correlation
+        event_correlation = []
+        for e_type, e_data in event_map.items():
+            event_correlation.append({
+                "event_type": e_type,
+                "total_occurrences": e_data["total_count"],
+                "affected_wells": list(e_data["wells"]),
+                "associated_formations": list(e_data["formations"])
+            })
+
+        return {
+            "wells_correlated": well_ids,
+            "correlation_matrix": correlation_matrix,
+            "common_formations": common_formations,
+            "event_correlation": sorted(event_correlation, key=lambda x: x["total_occurrences"], reverse=True),
+            "evidence_note": "Correlations are derived directly from actual historical event records."
+        }
 
 
 correlation_service = CorrelationService()
