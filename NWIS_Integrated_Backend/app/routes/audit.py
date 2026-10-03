@@ -26,11 +26,15 @@ async def get_audit_logs(
     """List audit log entries with optional filters."""
     logs = list(reversed(master_data_store.audit_logs))  # newest first
 
+    # Enforce RBAC: Non-admin users can only view their own logs
+    if current_user.role not in ["admin", "super_admin"]:
+        logs = [l for l in logs if l.get("user") == current_user.email]
+
     if module:
         logs = [l for l in logs if module.lower() in l.get("module", "").lower()]
     if action:
         logs = [l for l in logs if action.upper() in l.get("action", "").upper()]
-    if user:
+    if user and current_user.role in ["admin", "super_admin"]: # Only admins can filter by other users
         logs = [l for l in logs if user.lower() in l.get("user", "").lower()]
 
     total = len(logs)

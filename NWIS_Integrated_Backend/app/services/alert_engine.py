@@ -38,11 +38,20 @@ class AlertEngine:
 
     async def get_active_alerts(self, user_areas: Optional[List[str]] = None) -> List[AlertResponse]:
         """Returns all unacknowledged active alerts."""
-        alerts = [
-            AlertResponse(**data)
-            for data in self._alerts.values()
-            if not data.get("is_acknowledged", False) and not data.get("is_dismissed", False)
-        ]
+        alerts = []
+        from app.services.data_store import master_data_store
+        
+        for data in self._alerts.values():
+            if data.get("is_acknowledged", False) or data.get("is_dismissed", False):
+                continue
+                
+            if user_areas is not None:
+                well_id = data.get("well_id")
+                well = next((w for w in master_data_store.wells if w["id"] == well_id), None)
+                if well and well.get("operational_area") not in user_areas:
+                    continue
+                    
+            alerts.append(AlertResponse(**data))
         return alerts
 
     async def acknowledge_alert(self, alert_id: str, feedback: Optional[str] = None) -> Optional[AlertResponse]:

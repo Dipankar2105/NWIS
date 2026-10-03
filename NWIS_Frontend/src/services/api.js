@@ -91,6 +91,10 @@ export const authService = {
   getMe: async () => {
     const response = await apiClient.get('/auth/me');
     return response.data;
+  },
+  updateProfile: async (profileData) => {
+    const response = await apiClient.put('/auth/profile', profileData);
+    return response.data;
   }
 };
 

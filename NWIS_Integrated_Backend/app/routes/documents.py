@@ -22,6 +22,13 @@ from app.services.documents.vector_storage import vector_storage_service
 
 router = APIRouter(tags=["documents"])
 
+def _enforce_well_access_doc(well_id: str, current_user: UserProfile):
+    if not well_id or current_user.role == "super_admin":
+        return
+    user_areas = current_user.operational_areas or []
+    well = next((w for w in master_data_store.wells if w["id"] == well_id), None)
+    if well and well.get("operational_area") not in user_areas:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied to well's operational area.")
 
 @router.post("/upload", response_model=DocumentUploadResponse, status_code=status.HTTP_201_CREATED)
 async def upload_document(
@@ -39,6 +46,8 @@ async def upload_document(
     """
     filename = file.filename or "uploaded_document.pdf"
     content = await file.read()
+    if well_id:
+        _enforce_well_access_doc(well_id, current_user)
 
     result = await document_pipeline.process_document_bytes(
         content=content,
@@ -93,6 +102,8 @@ async def process_document_direct(
     """
     filename = file.filename or "uploaded_document.pdf"
     content = await file.read()
+    if well_id:
+        _enforce_well_access_doc(well_id, current_user)
 
     result = await document_pipeline.process_document_bytes(
         content=content,
@@ -272,8 +283,17 @@ async def list_documents(
         ))
 
     # Filter
+    user_areas = current_user.operational_areas or []
+    
     filtered = []
     for doc in combined:
+        if current_user.role != "super_admin":
+            if doc.well_id:
+                w_info = next((w for w in master_data_store.wells if w["id"] == doc.well_id), None)
+                w_area = w_info.get("operational_area") if w_info else None
+                if w_area and w_area not in user_areas:
+                    continue
+                    
         if well_id and (not doc.well_id or doc.well_id.lower() != well_id.lower()):
             continue
         if doc_type and doc_type.lower() not in (doc.doc_type or "").lower():

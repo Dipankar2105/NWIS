@@ -29,7 +29,12 @@ async def list_wells(
     all_wells = [w for w in master_data_store.wells if not w.get("is_archived", False)]
 
     filtered = []
+    user_areas = current_user.operational_areas or []
     for w in all_wells:
+        if current_user.role != "super_admin":
+            if w.get("operational_area") not in user_areas:
+                continue
+                
         if area and area.lower() not in (w.get("operational_area", "") or "").lower():
             continue
         if status and status.lower() != (w.get("status", "") or "").lower():
@@ -258,6 +263,12 @@ async def get_well_details(well_id: str, current_user: UserProfile = Depends(get
     well = next((w for w in master_data_store.wells if w["id"] == well_id or w["well_name"].lower() == well_id.lower()), None)
     if not well:
         raise HTTPException(status_code=404, detail=f"Well '{well_id}' not found.")
+        
+    if current_user.role != "super_admin":
+        user_areas = current_user.operational_areas or []
+        if well.get("operational_area") not in user_areas:
+            raise HTTPException(status_code=403, detail="Access denied to well outside assigned operational areas.")
+            
     return WellResponse(**well)
 
 

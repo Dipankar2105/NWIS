@@ -3,8 +3,11 @@ NWIS - System & Provider Status Routes
 Exposes safe health, provider configuration status, and multilingual capabilities
 """
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from app.config import get_settings
+from app.models.user import UserProfile
+from app.auth.dependencies import require_admin
+
 from app.schemas.system import ProviderStatusResponse, ProviderStatusItem, MultilingualStatusResponse, MultilingualStatus
 from app.schemas.translation import (
     LanguageDetectionRequest, 
@@ -134,7 +137,10 @@ async def get_system_settings():
 
 
 @router.put("/settings")
-async def update_system_settings(new_settings: dict):
+async def update_system_settings(
+    new_settings: dict,
+    current_user: UserProfile = Depends(require_admin)
+):
     """
     Updates operational thresholds for the session.
     Clearly reports persistence mode (demo_local vs supabase).
@@ -154,7 +160,7 @@ async def update_system_settings(new_settings: dict):
     master_data_store.audit_logs.append({
         "id": f"AUD-{uuid.uuid4().hex[:8]}",
         "timestamp": datetime.utcnow().isoformat(),
-        "user": "system_admin",
+        "user": current_user.email,
         "action": "SYSTEM_SETTINGS_UPDATED",
         "target": "SystemConfig",
         "module": "System",
@@ -170,7 +176,9 @@ async def update_system_settings(new_settings: dict):
 
 
 @router.post("/settings/reset")
-async def reset_system_settings():
+async def reset_system_settings(
+    current_user: UserProfile = Depends(require_admin)
+):
     """Resets operational settings to system default thresholds."""
     settings = get_settings()
     from datetime import datetime

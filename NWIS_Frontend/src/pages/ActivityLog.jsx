@@ -83,24 +83,8 @@ export default function ActivityLog() {
   }, []);
 
 
-  // Standard Audit Log baseline records synthesized from real backend operations
+  // Map real backend audit logs
   const auditRecords = useMemo(() => {
-    const defaultAuditRows = [
-      { id: 'aud-1', timestamp: '29 Sept 2026, 10:28 AM', user: 'Drilling Engineer', role: 'Drilling Engineer', action: 'Viewed Well', module: 'Well Intelligence', target: 'DKG-247', result: 'Success', sessionIp: 'S1245 / 10.12.5.34', details: 'Viewed well details and stratigraphy profile for DKG-247.' },
-      { id: 'aud-2', timestamp: '29 Sept 2026, 10:15 AM', user: 'Drilling Engineer', role: 'Drilling Engineer', action: 'Ran Risk Analysis', module: 'Risk & Events', target: 'DKG-247', result: 'Success', sessionIp: 'S1245 / 10.12.5.34', details: 'Generated risk analysis for well DKG-247 using historical events and offset well data. Identified high mud loss risk zone between 3,200 – 3,400 m.' },
-      { id: 'aud-3', timestamp: '29 Sept 2026, 09:54 AM', user: 'Drilling Engineer', role: 'Drilling Engineer', action: 'Asked NWIS', module: 'NWIS AI', target: 'Mud Loss Mitigation', result: 'Success', sessionIp: 'S1245 / 10.12.5.34', details: 'AI query about mud loss mitigation strategies in Barail formation.' },
-      { id: 'aud-4', timestamp: '29 Sept 2026, 09:41 AM', user: 'Drilling Engineer', role: 'Drilling Engineer', action: 'Uploaded Document', module: 'Documents', target: 'DUL-201_DDR.pdf', result: 'Success', sessionIp: 'S1244 / 10.12.5.34', details: 'Uploaded daily drilling report (4.2 MB) for DUL-201.' },
-      { id: 'aud-5', timestamp: '29 Sept 2026, 09:20 AM', user: 'Drilling Engineer', role: 'Drilling Engineer', action: 'Compared Wells', module: 'Analytics', target: 'DKG-231 vs DKG-215', result: 'Success', sessionIp: 'S1244 / 10.12.5.34', details: 'Cross-well correlation analysis.' },
-      { id: 'aud-6', timestamp: '29 Sept 2026, 08:55 AM', user: 'Drilling Engineer', role: 'Drilling Engineer', action: 'Changed Setting', module: 'Settings', target: 'Mud Loss Threshold', result: 'Success', sessionIp: 'S1243 / 10.11.8.21', details: 'Changed threshold from 50 to 60 bbl/hr.' },
-      { id: 'aud-7', timestamp: '29 Sept 2026, 08:32 AM', user: 'Drilling Engineer', role: 'Drilling Engineer', action: 'Downloaded Report', module: 'Analytics', target: 'Risk_Analysis_DUL.pdf', result: 'Success', sessionIp: 'S1243 / 10.11.8.21', details: 'Downloaded PDF report for risk analysis.' },
-      { id: 'aud-8', timestamp: '29 Sept 2026, 09:15 AM', user: 'Geoscientist', role: 'Geoscientist', action: 'Viewed Event', module: 'Risk & Events', target: 'Mud Loss Event', result: 'Warning', sessionIp: 'S1240 / 10.11.6.45', details: 'High severity event viewed.' },
-      { id: 'aud-9', timestamp: '28 Sept 2026, 05:42 PM', user: 'Drilling Engineer', role: 'Drilling Engineer', action: 'Login', module: 'System', target: 'Auth Session', result: 'Success', sessionIp: 'S1238 / 10.11.6.45', details: 'User login to system.' },
-      { id: 'aud-10', timestamp: '28 Sept 2026, 05:36 PM', user: 'Drilling Engineer', role: 'Drilling Engineer', action: 'Logout', module: 'System', target: 'Auth Session', result: 'Success', sessionIp: 'S1237 / 10.11.6.45', details: 'User logout from system.' },
-      { id: 'aud-11', timestamp: '28 Sept 2026, 04:10 PM', user: 'Admin User', role: 'Administrator', action: 'Added User', module: 'Settings', target: 'new.user@nwis.gov.in', result: 'Success', sessionIp: 'S1236 / 10.10.8.12', details: 'Created new user account.' },
-      { id: 'aud-12', timestamp: '28 Sept 2026, 03:28 PM', user: 'Drilling Engineer', role: 'Drilling Engineer', action: 'Failed Login', module: 'System', target: 'Auth Session', result: 'Failed', sessionIp: '- / 10.11.5.23', details: 'Invalid credentials (3 attempts).' },
-    ];
-
-    // Map real backend audit logs
     const liveAuditRows = auditLogs.map((a, i) => ({
       id: a.id || `audit-${i}`,
       timestamp: new Date(a.timestamp || Date.now()).toLocaleString('en-GB', {
@@ -130,8 +114,7 @@ export default function ActivityLog() {
       details: h.question || 'Natural language knowledge query.'
     }));
 
-    const combined = [...liveAuditRows, ...liveHistoryRows, ...defaultAuditRows];
-    return combined;
+    return [...liveAuditRows, ...liveHistoryRows];
   }, [historyItems, auditLogs, user]);
 
 
@@ -460,8 +443,15 @@ export default function ActivityLog() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 text-[11px]">
-                    {paginatedRecords.map((rec) => {
-                      const isSelected = selectedRecord?.id === rec.id;
+                    {paginatedRecords.length === 0 ? (
+                      <tr>
+                        <td colSpan="9" className="py-8 text-center text-slate-500 font-semibold">
+                          No audit activity found for the selected filters.
+                        </td>
+                      </tr>
+                    ) : (
+                      paginatedRecords.map((rec) => {
+                        const isSelected = selectedRecord?.id === rec.id;
                       return (
                         <tr 
                           key={rec.id}
@@ -488,7 +478,7 @@ export default function ActivityLog() {
                           <td className="py-2.5 text-slate-500 truncate max-w-[140px]" title={rec.details}>{rec.details}</td>
                         </tr>
                       );
-                    })}
+                    }))}
                   </tbody>
                 </table>
               </div>
@@ -599,26 +589,9 @@ export default function ActivityLog() {
                       Activity Chain (This Session)
                     </span>
                     <div className="space-y-1.5 text-[11px]">
-                      {[
-                        { step: 1, time: '09:50 AM', action: 'Viewed Well DKG-247', mod: 'Well Intelligence' },
-                        { step: 2, time: '09:58 AM', action: 'Compared Wells (DKG-231, DKG-215)', mod: 'Analytics' },
-                        { step: 3, time: '10:05 AM', action: 'Asked NWIS (mud loss mitigation)', mod: 'NWIS AI' },
-                        { step: 4, time: '10:15 AM', action: 'Ran Risk Analysis', mod: 'Risk & Events', active: true },
-                        { step: 5, time: '10:20 AM', action: 'Exported Report', mod: 'Analytics' },
-                      ].map((ch) => (
-                        <div key={ch.step} className={`p-1.5 rounded-md flex items-center justify-between text-xs ${
-                          ch.active ? 'bg-blue-100/70 font-bold text-blue-900 border border-blue-200' : 'bg-slate-50 text-slate-600'
-                        }`}>
-                          <div className="flex items-center gap-2">
-                            <span className="w-4 h-4 rounded-full bg-white text-slate-700 text-[9px] font-bold flex items-center justify-center shadow-2xs">
-                              {ch.step}
-                            </span>
-                            <span className="text-[10px] font-mono text-slate-400">{ch.time}</span>
-                            <span className="text-[11px]">{ch.action}</span>
-                          </div>
-                          <span className="text-[9.5px] text-slate-400">{ch.mod}</span>
-                        </div>
-                      ))}
+                      <div className="p-1.5 rounded-md text-center text-slate-500 bg-slate-50">
+                        Session chain not available
+                      </div>
                     </div>
                   </div>
 

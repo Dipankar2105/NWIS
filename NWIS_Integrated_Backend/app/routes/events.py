@@ -14,6 +14,12 @@ from datetime import datetime
 
 router = APIRouter()
 
+def _check_event_access(event_well_id: str, current_user: UserProfile) -> bool:
+    if current_user.role == "super_admin":
+        return True
+    user_areas = current_user.operational_areas or []
+    well = next((w for w in master_data_store.wells if w["id"] == event_well_id), None)
+    return well and well.get("operational_area") in user_areas
 
 @router.get("", response_model=EventListResponse)
 async def list_events(
@@ -30,6 +36,8 @@ async def list_events(
     """List drilling events with multi-criteria filtering."""
     filtered = []
     for ev in master_data_store.events:
+        if ev.get("well_id") and not _check_event_access(ev["well_id"], current_user):
+            continue
         if well_id and ev.get("well_id", "").lower() != well_id.lower():
             continue
         if event_type and event_type.lower().replace(" ", "_") not in ev.get("event_type", "").lower().replace(" ", "_"):
@@ -108,6 +116,10 @@ async def get_event_detail(
     ev = next((e for e in master_data_store.events if e["id"] == event_id), None)
     if not ev:
         raise HTTPException(status_code=404, detail=f"Event '{event_id}' not found.")
+        
+    if ev.get("well_id") and not _check_event_access(ev["well_id"], current_user):
+        raise HTTPException(status_code=403, detail="Access denied to event outside assigned operational areas.")
+        
     return EventResponse(**ev)
 
 
@@ -129,6 +141,9 @@ async def create_event(
     well = next((w for w in master_data_store.wells if w["id"] == well_id or w["well_name"] == well_id), None)
     if not well:
         raise HTTPException(status_code=404, detail=f"Well '{well_id}' not found.")
+        
+    if not _check_event_access(well["id"], current_user):
+        raise HTTPException(status_code=403, detail="Cannot create event for a well outside assigned operational areas.")
 
     new_id = f"EVT-{uuid.uuid4().hex[:6].upper()}"
     severity = (event_data.get("severity") or "LOW").upper()

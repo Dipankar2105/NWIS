@@ -43,6 +43,9 @@ export default function UserProfile() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [editForm, setEditForm] = useState({ full_name: '', department: '', operational_areas: '' });
+  const [editSaving, setEditSaving] = useState(false);
 
   // Notification toggles state
   const [notifications, setNotifications] = useState({
@@ -84,6 +87,38 @@ export default function UserProfile() {
   const handleSavePreferences = () => {
     setSaveSuccess(true);
     setTimeout(() => setSaveSuccess(false), 3000);
+  };
+  
+  const handleEditOpen = () => {
+    if (profile) {
+      setEditForm({
+        full_name: profile.full_name || '',
+        department: profile.department || '',
+        operational_areas: profile.operational_areas ? profile.operational_areas.join(', ') : ''
+      });
+      setIsEditProfileOpen(true);
+    }
+  };
+  
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    setEditSaving(true);
+    try {
+      const payload = {
+        full_name: editForm.full_name,
+        department: editForm.department,
+        operational_areas: editForm.operational_areas.split(',').map(s => s.trim()).filter(Boolean)
+      };
+      const updatedProfile = await authService.updateProfile(payload);
+      setProfile(updatedProfile);
+      setIsEditProfileOpen(false);
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
+    } catch (err) {
+      alert(extractErrorMessage(err));
+    } finally {
+      setEditSaving(false);
+    }
   };
 
   const formattedRole = profile?.role 
@@ -137,7 +172,7 @@ export default function UserProfile() {
                   </h3>
                 </div>
                 <button 
-                  onClick={() => alert('Profile editing is managed via central OIL Identity directory.')}
+                  onClick={handleEditOpen}
                   className="flex items-center gap-1 text-[11px] font-bold text-blue-600 hover:text-blue-800"
                 >
                   <Edit3 className="w-3 h-3" /> Edit Profile
@@ -461,6 +496,66 @@ export default function UserProfile() {
           </div>
 
         </main>
+        
+        {/* Edit Profile Modal */}
+        {isEditProfileOpen && (
+          <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-fade-in-up">
+              <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+                <h3 className="font-extrabold text-slate-900 text-sm">Edit Profile</h3>
+                <button onClick={() => setIsEditProfileOpen(false)} className="text-slate-400 hover:text-slate-600">✕</button>
+              </div>
+              <form onSubmit={handleEditSubmit} className="p-4 space-y-4">
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 mb-1">Full Name</label>
+                  <input 
+                    type="text" 
+                    value={editForm.full_name}
+                    onChange={e => setEditForm({...editForm, full_name: e.target.value})}
+                    className="w-full text-xs p-2 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 mb-1">Department</label>
+                  <input 
+                    type="text" 
+                    value={editForm.department}
+                    onChange={e => setEditForm({...editForm, department: e.target.value})}
+                    className="w-full text-xs p-2 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 mb-1">Operational Areas (comma-separated)</label>
+                  <input 
+                    type="text" 
+                    value={editForm.operational_areas}
+                    onChange={e => setEditForm({...editForm, operational_areas: e.target.value})}
+                    placeholder="e.g. Duliajan, Moran"
+                    className="w-full text-xs p-2 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+                  />
+                </div>
+                <div className="pt-2 flex items-center justify-end gap-2">
+                  <button 
+                    type="button" 
+                    onClick={() => setIsEditProfileOpen(false)}
+                    className="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 rounded-lg"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit" 
+                    disabled={editSaving}
+                    className="px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm disabled:opacity-50"
+                  >
+                    {editSaving ? 'Saving...' : 'Save Profile'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
   );
 }
