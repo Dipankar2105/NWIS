@@ -185,9 +185,29 @@ class EvidenceStore:
         """
         Returns structured drilling events from both the master data store
         AND newly extracted events from processed documents in Phase 2.
+        Phase 3.1: Enriches events with operational_area from well lookup for
+        field-based relevance scoring.
         """
         from app.services.data_store import master_data_store
         events = list(master_data_store.events)
+
+        # Phase 3.1: Build well lookup for operational_area enrichment
+        well_area_lookup: dict = {}
+        for w in master_data_store.wells:
+            wn = (w.get("well_name") or "").upper()
+            if wn:
+                well_area_lookup[wn] = {
+                    "operational_area": w.get("operational_area") or w.get("field_name") or "",
+                    "field_name": w.get("field_name") or ""
+                }
+
+        # Enrich master events with operational_area if not already present
+        for ev in events:
+            if not ev.get("operational_area"):
+                wn = (ev.get("well_name") or "").upper()
+                if wn in well_area_lookup:
+                    ev["operational_area"] = well_area_lookup[wn]["operational_area"]
+                    ev["field_name"] = well_area_lookup[wn]["field_name"]
 
         # Incorporate events from document repository extractions
         docs = document_repository.list_documents()
@@ -196,6 +216,8 @@ class EvidenceStore:
             ext = document_repository.get_extraction_result(doc_id)
             if ext and ext.events:
                 well_name = ext.header.well_name or d.get("well_id") or "UNKNOWN-WELL"
+                wn_upper = well_name.upper()
+                area_info = well_area_lookup.get(wn_upper, {})
                 for ev in ext.events:
                     events.append({
                         "id": f"{doc_id}_{ev.event_type}_{ev.page_number}",
@@ -208,7 +230,9 @@ class EvidenceStore:
                         "description": ev.description,
                         "source_text": ev.source_text,
                         "page_number": ev.page_number,
-                        "confidence": ev.confidence
+                        "confidence": ev.confidence,
+                        "operational_area": area_info.get("operational_area", ""),
+                        "field_name": area_info.get("field_name", "")
                     })
 
         if self.settings.is_supabase_configured:
