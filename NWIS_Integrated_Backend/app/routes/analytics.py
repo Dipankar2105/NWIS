@@ -50,7 +50,8 @@ async def analyze_correlation(
     Analyzes historical correlation between drilling parameters and drilling events.
     Enforces scientific anti-causation constraints.
     """
-    _enforce_well_access([request.target_well_id] + request.offset_well_ids, current_user)
+    well_ids = request.well_ids or []
+    _enforce_well_access(well_ids, current_user)
     return await correlation_service.analyze_correlation(request)
 
 
@@ -77,7 +78,8 @@ async def analyze_what_if_scenario(
     Evaluates hypothetical drilling parameters strictly against historical NWIS observations.
     Never states outcomes will definitely occur.
     """
-    _enforce_well_access([request.target_well_id], current_user)
+    well_ids = [request.reference_well] if request.reference_well else []
+    _enforce_well_access(well_ids, current_user)
     return await what_if_service.analyze_scenario(request)
 
 
@@ -92,5 +94,6 @@ async def generate_drilling_recipe(
     """
     Generates an evidence-based drilling recipe grounded in historical offset well performance.
     """
-    _enforce_well_access([request.target_well_id], current_user)
+    well_ids = [request.reference_well] if request.reference_well else []
+    _enforce_well_access(well_ids, current_user)
     return await drilling_recipe_service.generate_recipe(request)

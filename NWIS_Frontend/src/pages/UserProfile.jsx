@@ -412,7 +412,7 @@ export default function UserProfile() {
                     </h3>
                   </div>
                   <button 
-                    onClick={() => alert('Password modification is handled via OIL India SSO')}
+                    onClick={() => alert('Password modification is handled via NWIS Enterprise SSO')}
                     className="text-[11px] font-bold text-blue-600 hover:text-blue-800"
                   >
                     Change Password

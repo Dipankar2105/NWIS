@@ -390,7 +390,7 @@ export default function Login() {
             <span>|</span>
             <button 
               type="button"
-              onClick={() => alert("NWIS Drilling Support: Contact your OIL India IT Administrator")}
+              onClick={() => alert("NWIS Drilling Support: Contact your NWIS Enterprise IT Administrator")}
               className="hover:text-slate-600 transition-colors"
             >
               Help
@@ -416,12 +416,12 @@ export default function Login() {
             
             <div className="py-4 space-y-3 text-sm text-slate-600">
               <p>
-                NWIS is an enterprise operational drilling intelligence platform. For security compliance, password resets must be provisioned through your OIL India IT administrator or designated Super Administrator.
+                NWIS is an enterprise operational drilling intelligence platform. For security compliance, password resets must be provisioned through your NWIS Enterprise IT administrator or designated Super Administrator.
               </p>
               <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs text-slate-700">
                 <p className="font-semibold text-slate-800">Support Desk:</p>
-                <p>Email: it-support@oilindia.in</p>
-                <p>Desk: OIL-DR-SEC-2847</p>
+                <p>Email: support@nwis-enterprise.ai</p>
+                <p>Desk: NWIS-DR-SEC-2847</p>
               </div>
             </div>
 
