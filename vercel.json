@@ -12,19 +12,19 @@
   "routes": [
     {
       "src": "/api/v1/(.*)",
-      "dest": "https://nwis-backend.onrender.com/api/v1/$1"
+      "dest": "https://nwis-backend-mwwt.onrender.com/api/v1/$1"
     },
     {
       "src": "/health",
-      "dest": "https://nwis-backend.onrender.com/health"
+      "dest": "https://nwis-backend-mwwt.onrender.com/health"
     },
     {
       "src": "/docs",
-      "dest": "https://nwis-backend.onrender.com/docs"
+      "dest": "https://nwis-backend-mwwt.onrender.com/docs"
     },
     {
       "src": "/openapi.json",
-      "dest": "https://nwis-backend.onrender.com/openapi.json"
+      "dest": "https://nwis-backend-mwwt.onrender.com/openapi.json"
     },
     {
       "src": "/assets/(.*)",
