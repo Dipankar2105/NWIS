@@ -35,3 +35,5 @@ extracted_las/
 # Legacy backend (not used in production)
 nwis-backend/
 
+.vercel
+.env*

@@ -1,49 +1,49 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "services": {
-    "nwis_frontend": {
-      "root": "NWIS_Frontend",
-      "framework": "vite"
-    },
-    "nwis_integrated_backend": {
-      "root": "NWIS_Integrated_Backend",
-      "framework": "fastapi",
+  "version": 2,
+  "builds": [
+    {
+      "src": "NWIS_Frontend/package.json",
+      "use": "@vercel/static-build",
       "config": {
-        "installCommand": "pip install -r requirements-vercel.txt",
-        "maxLambdaSize": "50mb"
+        "distDir": "dist"
+      }
+    },
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": [
+          "NWIS_Integrated_Backend/**",
+          "NWIS_Integrated_Backend/**/*"
+        ]
       }
     }
-  },
-  "rewrites": [
+  ],
+  "routes": [
     {
-      "source": "/api/v1/(.*)",
-      "destination": {
-        "service": "nwis_integrated_backend"
-      }
+      "src": "/api/v1/(.*)",
+      "dest": "api/index.py"
     },
     {
-      "source": "/health",
-      "destination": {
-        "service": "nwis_integrated_backend"
-      }
+      "src": "/health",
+      "dest": "api/index.py"
     },
     {
-      "source": "/docs",
-      "destination": {
-        "service": "nwis_integrated_backend"
-      }
+      "src": "/docs",
+      "dest": "api/index.py"
     },
     {
-      "source": "/openapi.json",
-      "destination": {
-        "service": "nwis_integrated_backend"
-      }
+      "src": "/openapi.json",
+      "dest": "api/index.py"
     },
     {
-      "source": "/(.*)",
-      "destination": {
-        "service": "nwis_frontend"
-      }
+      "src": "/assets/(.*)",
+      "dest": "NWIS_Frontend/assets/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "NWIS_Frontend/$1"
     }
   ]
 }
+

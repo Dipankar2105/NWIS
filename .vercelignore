@@ -4,8 +4,8 @@
 # ============================================================
 
 # Legacy / redundant backend directories
-nwis-backend/
-app/
+/nwis-backend/
+/app/
 
 # Local environments
 venv/
