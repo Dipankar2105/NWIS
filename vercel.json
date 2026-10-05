@@ -7,15 +7,6 @@
       "config": {
         "distDir": "dist"
       }
-    },
-    {
-      "src": "api/index.py",
-      "use": "@vercel/python",
-      "config": {
-        "includeFiles": [
-          "NWIS_Integrated_Backend/**"
-        ]
-      }
     }
   ],
   "routes": [
@@ -36,11 +27,15 @@
       "dest": "https://nwis-backend.onrender.com/openapi.json"
     },
     {
+      "src": "/assets/(.*)",
+      "dest": "/NWIS_Frontend/assets/$1"
+    },
+    {
       "handle": "filesystem"
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/NWIS_Frontend/index.html"
     }
   ]
 }
