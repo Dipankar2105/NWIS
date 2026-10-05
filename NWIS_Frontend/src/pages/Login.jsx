@@ -11,7 +11,6 @@ import {
   ShieldCheck, 
   AlertCircle, 
   Loader2,
-  CheckCircle2,
   X
 } from 'lucide-react';
 
@@ -39,7 +38,7 @@ export default function Login() {
     nwis: 'Operational',
     knowledge: 'Operational',
     gis: 'Operational',
-    lastUpdated: '29 Sept 2026, 10:42 AM'
+    lastUpdated: '5 Oct 2026, 1:24 AM'
   });
 
   // Redirect if already authenticated
@@ -127,44 +126,57 @@ export default function Login() {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen lg:h-screen w-full bg-[#070D18] overflow-x-hidden lg:overflow-hidden">
+    <div className="flex flex-col lg:flex-row min-h-screen lg:h-screen w-full bg-[#F8FAFC] overflow-x-hidden lg:overflow-hidden font-sans select-none">
+      
       {/* ============================================================ */}
-      {/* LEFT PANEL: Brand, Geospatial Visualization & Capabilities   */}
+      {/* LEFT PANEL: Exact Pristine Hero Visual from Reference Image   */}
       {/* ============================================================ */}
-      <div className="relative w-full lg:w-[60%] xl:w-[65%] 2xl:w-[66.4%] h-52 sm:h-72 md:h-96 lg:h-screen bg-[#070D18] flex flex-col justify-between overflow-hidden select-none flex-shrink-0">
-        {/* Full Visual Background (Drilling Rig & Geospatial Map from Approved Design) */}
+      <div className="relative w-full lg:w-[66.4%] min-h-[480px] lg:h-screen bg-[#070D18] overflow-hidden flex-shrink-0">
+        {/* Exact Visual Background Image matching reference image 100% */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
           style={{ backgroundImage: "url('/assets/login-hero-bg.png')" }}
         />
-        <span className="sr-only">NWIS — Nearby Wells Intelligence System — AI-Powered Offset Well Knowledge and Decision Support Platform</span>
+        <span className="sr-only">
+          NWIS — Nearby Wells Intelligence System — Turning Drilling Experience into Smarter Decisions. Access nearby wells, historical drilling events, operational knowledge and AI-driven insights to mitigate risks and improve well performance.
+        </span>
       </div>
 
       {/* ============================================================ */}
-      {/* RIGHT PANEL: Secure Access & Authentication                  */}
+      {/* RIGHT PANEL: Clean Off-White Login Panel matching Reference  */}
       {/* ============================================================ */}
-      <div className="w-full lg:w-[40%] xl:w-[35%] 2xl:w-[33.6%] h-full lg:h-screen bg-[#F8FAFC] flex flex-col justify-between p-4 sm:p-6 lg:p-8 xl:p-10 relative z-10 border-t lg:border-t-0 lg:border-l border-slate-200/80 shadow-2xl lg:shadow-none overflow-y-auto lg:overflow-hidden">
+      <div className="w-full lg:w-[33.6%] h-full lg:h-screen bg-[#F8FAFC] flex flex-col justify-between p-6 sm:p-8 lg:p-10 relative z-10 border-t lg:border-t-0 lg:border-l border-slate-200/80 overflow-y-auto lg:overflow-hidden">
         
+        {/* Top-Right & Bottom-Right Geometric Watermark SVGs */}
+        <div className="absolute top-0 right-0 w-48 h-48 pointer-events-none opacity-30 z-0">
+          <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full text-slate-300">
+            <path d="M150 20L190 43V89L150 112L110 89V43L150 20Z" stroke="currentColor" strokeWidth="1.5" />
+            <path d="M190 43L150 66L110 43" stroke="currentColor" strokeWidth="1.5" />
+            <path d="M150 66V112" stroke="currentColor" strokeWidth="1.5" />
+            <circle cx="150" cy="20" r="3" fill="currentColor" />
+            <circle cx="190" cy="43" r="3" fill="currentColor" />
+            <circle cx="110" cy="43" r="3" fill="currentColor" />
+          </svg>
+        </div>
+
+        <div className="absolute bottom-0 right-0 w-56 h-56 pointer-events-none opacity-25 z-0">
+          <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full text-slate-300">
+            <path d="M160 100L190 117V152L160 169L130 152V117L160 100Z" stroke="currentColor" strokeWidth="1.5" />
+            <path d="M120 40L150 57V92L120 109L90 92V57L120 40Z" stroke="currentColor" strokeWidth="1.5" />
+          </svg>
+        </div>
+
         {/* Top Spacer */}
-        <div className="hidden lg:block h-1" />
+        <div className="hidden lg:block h-6" />
 
         {/* Main Authentication Box */}
-        <div className="w-full max-w-[400px] mx-auto my-auto py-2 lg:py-4">
+        <div className="relative z-10 w-full max-w-[360px] mx-auto my-auto py-2">
           
-          {/* Approved NWIS Logo */}
+          {/* Header */}
           <div className="mb-6">
-            <img 
-              src="/assets/nwis-logo-dark.png" 
-              alt="NWIS - Nearby Wells Intelligence System" 
-              className="h-9 w-auto object-contain"
-            />
-          </div>
-
-          {/* Heading */}
-          <div className="mb-5 sm:mb-6">
-            <h1 className="text-2xl sm:text-3xl lg:text-[32px] font-extrabold text-[#0F172A] tracking-tight font-display">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] tracking-tight font-display">
               Welcome back
-            </h1>
+            </h2>
             <p className="text-slate-500 font-normal text-xs sm:text-sm mt-1">
               Sign in to access NWIS.
             </p>
@@ -172,7 +184,7 @@ export default function Login() {
 
           {/* Session Expired Notice */}
           {sessionExpiredMessage && (
-            <div className="mb-6 p-3.5 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-2.5 text-amber-800 text-xs">
+            <div className="mb-5 p-3.5 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-2.5 text-amber-800 text-xs">
               <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
               <span>{sessionExpiredMessage}</span>
             </div>
@@ -180,7 +192,7 @@ export default function Login() {
 
           {/* Inline Error Notice */}
           {errorMessage && (
-            <div className="mb-6 p-3.5 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2.5 text-red-800 text-xs animate-in fade-in duration-200">
+            <div className="mb-5 p-3.5 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2.5 text-red-800 text-xs animate-in fade-in duration-200">
               <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
               <div className="flex-1">
                 <p className="font-semibold text-red-900">Unable to sign in</p>
@@ -190,19 +202,19 @@ export default function Login() {
           )}
 
           {/* Login Form */}
-          <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             
             {/* Work Email Field */}
             <div>
               <label 
                 htmlFor="work-email" 
-                className="block text-sm font-semibold text-slate-800 mb-1.5"
+                className="block text-xs font-semibold text-slate-700 mb-1.5"
               >
                 Work email
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-slate-400" />
+                  <Mail className="h-4 w-4 text-slate-400" />
                 </div>
                 <input
                   id="work-email"
@@ -214,11 +226,11 @@ export default function Login() {
                     setEmail(e.target.value);
                     if (fieldErrors.email) setFieldErrors({ ...fieldErrors, email: '' });
                   }}
-                  placeholder="Enter your work email"
-                  className={`block w-full pl-10 pr-3.5 py-3 border text-slate-900 text-sm rounded-lg bg-white placeholder-slate-400 focus:outline-none focus:ring-2 transition-all ${
+                  placeholder="demo@oilindia.in"
+                  className={`block w-full pl-10 pr-3.5 py-2.5 border text-slate-900 text-sm rounded-lg bg-white placeholder-slate-400 focus:outline-none focus:ring-2 transition-all ${
                     fieldErrors.email 
-                      ? 'border-red-400 focus:ring-red-400 focus:border-red-400' 
-                      : 'border-slate-200 focus:ring-red-600/20 focus:border-red-600'
+                      ? 'border-red-500 focus:ring-red-400 focus:border-red-500' 
+                      : 'border-slate-200 focus:ring-[#035371]/20 focus:border-[#035371]'
                   } disabled:bg-slate-50 disabled:text-slate-500`}
                 />
               </div>
@@ -232,21 +244,21 @@ export default function Login() {
               <div className="flex items-center justify-between mb-1.5">
                 <label 
                   htmlFor="password" 
-                  className="block text-sm font-semibold text-slate-800"
+                  className="block text-xs font-semibold text-slate-700"
                 >
                   Password
                 </label>
                 <button
                   type="button"
                   onClick={() => setShowForgotModal(true)}
-                  className="text-xs sm:text-sm font-semibold text-[#B91C1C] hover:text-[#991B1B] hover:underline focus:outline-none transition-colors"
+                  className="text-xs font-semibold text-[#0284C7] hover:text-[#0369A1] hover:underline focus:outline-none transition-colors"
                 >
                   Forgot password?
                 </button>
               </div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-slate-400" />
+                  <Lock className="h-4 w-4 text-slate-400" />
                 </div>
                 <input
                   id="password"
@@ -258,23 +270,23 @@ export default function Login() {
                     setPassword(e.target.value);
                     if (fieldErrors.password) setFieldErrors({ ...fieldErrors, password: '' });
                   }}
-                  placeholder="Enter your password"
-                  className={`block w-full pl-10 pr-11 py-3 border text-slate-900 text-sm rounded-lg bg-white placeholder-slate-400 focus:outline-none focus:ring-2 transition-all ${
+                  placeholder="demo123"
+                  className={`block w-full pl-10 pr-10 py-2.5 border text-slate-900 text-sm rounded-lg bg-white placeholder-slate-400 focus:outline-none focus:ring-2 transition-all ${
                     fieldErrors.password 
-                      ? 'border-red-400 focus:ring-red-400 focus:border-red-400' 
-                      : 'border-slate-200 focus:ring-red-600/20 focus:border-red-600'
+                      ? 'border-red-500 focus:ring-red-400 focus:border-red-500' 
+                      : 'border-slate-200 focus:ring-[#035371]/20 focus:border-[#035371]'
                   } disabled:bg-slate-50 disabled:text-slate-500`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? (
-                    <EyeOff className="h-5 w-5" />
+                    <EyeOff className="h-4 w-4" />
                   ) : (
-                    <Eye className="h-5 w-5" />
+                    <Eye className="h-4 w-4" />
                   )}
                 </button>
               </div>
@@ -283,33 +295,33 @@ export default function Login() {
               )}
             </div>
 
-            {/* Remember This Device Checkbox */}
+            {/* Remember Device Checkbox */}
             <div className="flex items-center pt-0.5">
               <input
                 id="remember-device"
                 type="checkbox"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                className="h-4 w-4 rounded border-slate-300 text-[#B91C1C] focus:ring-red-500 focus:ring-offset-0 cursor-pointer accent-[#B91C1C]"
+                className="h-4 w-4 rounded border-slate-300 text-[#035371] focus:ring-[#035371] focus:ring-offset-0 cursor-pointer accent-[#035371]"
               />
               <label 
                 htmlFor="remember-device" 
-                className="ml-2.5 block text-xs sm:text-sm text-slate-700 font-medium cursor-pointer select-none"
+                className="ml-2.5 block text-xs text-slate-700 font-semibold cursor-pointer select-none"
               >
                 Remember this device
               </label>
             </div>
 
-            {/* Primary Sign In Button */}
+            {/* Primary Sign In Button (Deep Teal #035371 - EXACT MATCH TO REFERENCE IMAGE) */}
             <button
               type="submit"
               id="sign-in-btn"
               disabled={isSubmitting}
-              className="w-full h-12 flex items-center justify-center gap-2 px-5 py-3 border border-transparent rounded-lg text-white font-semibold text-sm sm:text-base bg-[#B91C1C] hover:bg-[#991B1B] active:bg-[#7F1D1D] disabled:bg-red-800/60 disabled:cursor-not-allowed shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2"
+              className="w-full h-11 flex items-center justify-center gap-2 px-5 py-2.5 border border-transparent rounded-lg text-white font-semibold text-sm bg-[#035371] hover:bg-[#02435C] active:bg-[#01354A] disabled:bg-[#035371]/60 disabled:cursor-not-allowed shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-[#035371] focus:ring-offset-2"
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin text-white" />
                   <span>Signing in...</span>
                 </>
               ) : (
@@ -321,8 +333,8 @@ export default function Login() {
             </button>
           </form>
 
-          {/* Authorized Access Only Divider */}
-          <div className="relative my-6">
+          {/* Access Security Divider */}
+          <div className="relative my-5">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-slate-200" />
             </div>
@@ -333,54 +345,54 @@ export default function Login() {
             </div>
           </div>
 
-          {/* SYSTEM STATUS Card (Exact from Design) */}
-          <div className="bg-white border border-slate-200/90 rounded-xl p-4 shadow-sm">
+          {/* SYSTEM STATUS Card (Exact Match to Reference Image) */}
+          <div className="bg-white border border-slate-200/90 rounded-xl p-3.5 shadow-sm">
             {/* Header */}
-            <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-100">
+            <div className="flex items-center justify-between pb-2 mb-2.5 border-b border-slate-100">
               <div className="flex items-center gap-1.5 text-slate-800">
-                <ShieldCheck className="w-4 h-4 text-slate-700" />
-                <span className="text-[11px] font-bold tracking-wider uppercase">
+                <ShieldCheck className="w-3.5 h-3.5 text-slate-700" />
+                <span className="text-[11px] font-bold tracking-wider uppercase text-slate-800">
                   SYSTEM STATUS
                 </span>
               </div>
-              <span className="text-[11px] text-slate-400">
+              <span className="text-[10px] text-slate-400 font-normal">
                 Last updated: {systemHealth.lastUpdated}
               </span>
             </div>
 
-            {/* Status Rows */}
+            {/* Service Status Rows */}
             <div className="space-y-2 text-xs">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-sm" />
+                  <span className="w-2 h-2 rounded-full bg-[#10B981] shadow-sm" />
                   <span className="text-slate-700 font-medium">NWIS Services</span>
                 </div>
-                <span className="text-emerald-600 font-semibold">{systemHealth.nwis}</span>
+                <span className="text-[#10B981] font-semibold text-xs">{systemHealth.nwis}</span>
               </div>
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-sm" />
+                  <span className="w-2 h-2 rounded-full bg-[#10B981] shadow-sm" />
                   <span className="text-slate-700 font-medium">Knowledge Base</span>
                 </div>
-                <span className="text-emerald-600 font-semibold">{systemHealth.knowledge}</span>
+                <span className="text-[#10B981] font-semibold text-xs">{systemHealth.knowledge}</span>
               </div>
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-sm" />
+                  <span className="w-2 h-2 rounded-full bg-[#10B981] shadow-sm" />
                   <span className="text-slate-700 font-medium">GIS Services</span>
                 </div>
-                <span className="text-emerald-600 font-semibold">{systemHealth.gis}</span>
+                <span className="text-[#10B981] font-semibold text-xs">{systemHealth.gis}</span>
               </div>
             </div>
           </div>
 
         </div>
 
-        {/* Bottom Footer Links */}
-        <div className="text-center pt-4 pb-2">
-          <div className="flex justify-center items-center gap-3 text-xs text-slate-400">
+        {/* Footer Links */}
+        <div className="relative z-10 text-center pt-3 pb-1">
+          <div className="flex justify-center items-center gap-3 text-[11px] text-slate-400 font-medium">
             <button 
               type="button"
               onClick={() => alert("NWIS Enterprise Platform - Privacy and Data Governance Policy")}
@@ -388,7 +400,7 @@ export default function Login() {
             >
               Privacy
             </button>
-            <span>|</span>
+            <span className="text-slate-300">|</span>
             <button 
               type="button"
               onClick={() => alert("NWIS Operational Drilling Intelligence - Terms of Service")}
@@ -396,10 +408,10 @@ export default function Login() {
             >
               Terms
             </button>
-            <span>|</span>
+            <span className="text-slate-300">|</span>
             <button 
               type="button"
-              onClick={() => alert("NWIS Drilling Support: Contact your NWIS Enterprise IT Administrator")}
+              onClick={() => alert("NWIS Support: Contact your NWIS Enterprise IT Administrator")}
               className="hover:text-slate-600 transition-colors"
             >
               Help
@@ -409,36 +421,43 @@ export default function Login() {
 
       </div>
 
-      {/* Forgot Password Modal */}
+      {/* ============================================================ */}
+      {/* FORGOT PASSWORD MODAL (Matching Deep Teal Theme)            */}
+      {/* ============================================================ */}
       {showForgotModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-150">
-          <div className="bg-white rounded-xl max-w-md w-full p-6 shadow-2xl border border-slate-200">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h3 className="font-bold text-slate-900 text-lg font-display">Account Access & Recovery</h3>
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200">
+            <div className="flex items-center justify-between pb-3.5 border-b border-slate-100">
+              <h3 className="font-bold text-[#0F172A] text-lg font-display">
+                Account Access & Recovery
+              </h3>
               <button 
                 onClick={() => setShowForgotModal(false)}
-                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+                className="text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-1.5 rounded-lg transition-colors"
+                aria-label="Close modal"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
             
-            <div className="py-4 space-y-3 text-sm text-slate-600">
-              <p>
+            <div className="py-4 space-y-3.5 text-sm text-slate-600">
+              <p className="leading-relaxed">
                 NWIS is an enterprise operational drilling intelligence platform. For security compliance, password resets must be provisioned through your NWIS Enterprise IT administrator or designated Super Administrator.
               </p>
-              <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs text-slate-700">
-                <p className="font-semibold text-slate-800">Support Desk:</p>
-                <p>Email: support@nwis-enterprise.ai</p>
-                <p>Desk: NWIS-DR-SEC-2847</p>
+              
+              <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs text-slate-700 space-y-1">
+                <p className="font-semibold text-slate-900">Enterprise Support Desk:</p>
+                <p><span className="font-medium text-slate-600">Email:</span> support@nwis-enterprise.ai</p>
+                <p><span className="font-medium text-slate-600">Desk Code:</span> NWIS-DR-SEC-2847</p>
               </div>
             </div>
 
+            {/* Modal Action Button (Deep Teal #035371 - NOT RED) */}
             <div className="pt-2 flex justify-end">
               <button
                 type="button"
                 onClick={() => setShowForgotModal(false)}
-                className="px-4 py-2 bg-[#B91C1C] text-white rounded-lg text-sm font-semibold hover:bg-[#991B1B]"
+                className="px-5 py-2.5 bg-[#035371] text-white rounded-lg text-sm font-semibold hover:bg-[#02435C] active:bg-[#01354A] transition-all focus:outline-none focus:ring-2 focus:ring-[#035371] shadow-sm"
               >
                 Understood
               </button>
