@@ -23,8 +23,8 @@ export default function Login() {
   const { login, isAuthenticated, sessionExpiredMessage, clearExpiredMessage } = useAuth();
 
   // Form State
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('demo@oilindia.in');
+  const [password, setPassword] = useState('demo123');
   const [rememberMe, setRememberMe] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
 
