@@ -89,8 +89,8 @@ export default function Dashboard() {
     setError(null);
 
     try {
-      // 1. Fetch Dashboard Overview
-      const overviewData = await dashboardService.getOverview();
+      // 1. Fetch Dashboard Overview for selected field
+      const overviewData = await dashboardService.getOverview(selectedField);
       if (overviewData) {
         setOverview(prev => ({
           ...prev,

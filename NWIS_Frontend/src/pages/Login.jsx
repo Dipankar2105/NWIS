@@ -151,6 +151,15 @@ export default function Login() {
         {/* Main Authentication Box */}
         <div className="w-full max-w-[400px] mx-auto my-auto py-2 lg:py-4">
           
+          {/* Approved NWIS Logo */}
+          <div className="mb-6">
+            <img 
+              src="/assets/nwis-logo-dark.png" 
+              alt="NWIS - Nearby Wells Intelligence System" 
+              className="h-9 w-auto object-contain"
+            />
+          </div>
+
           {/* Heading */}
           <div className="mb-5 sm:mb-6">
             <h1 className="text-2xl sm:text-3xl lg:text-[32px] font-extrabold text-[#0F172A] tracking-tight font-display">

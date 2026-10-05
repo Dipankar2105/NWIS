@@ -273,10 +273,10 @@ export default function NearbyWells() {
           relevance_reason: 'Same formation • Offset telemetry matched'
         }));
         setNearbyWells(merged);
-        setSelectedWell(merged[0] || activeWell);
+        setSelectedWell(activeWell);
       } else {
         setNearbyWells(fallbackNearby);
-        setSelectedWell(fallbackNearby[0]);
+        setSelectedWell(activeWell);
       }
     } catch (err) {
       console.warn('Using enriched fallback wells for map:', err);
