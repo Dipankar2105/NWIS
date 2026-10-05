@@ -1,4 +1,4 @@
-"""
+﻿"""
 NWIS - Nearby Wells Intelligence System
 Main FastAPI Application Entrypoint (Harmonized Architecture)
 """
@@ -49,7 +49,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="NWIS — Nearby Wells Intelligence System",
+    title="NWIS â€” Nearby Wells Intelligence System",
     description="AI and Intelligence Backend for Drilling Analytics, Hazard Detection, and Multilingual RAG",
     version="1.0.0",
     lifespan=lifespan,
@@ -62,7 +62,7 @@ app.add_middleware(RequestLoggingMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,
-    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?",
+    allow_origin_regex=r"https?://.*\.vercel\.app|https?://(localhost|127\.0\.0\.1)(:\d+)?",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
