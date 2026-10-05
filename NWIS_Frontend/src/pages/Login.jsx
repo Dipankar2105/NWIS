@@ -132,92 +132,17 @@ export default function Login() {
     <div className="flex flex-col lg:flex-row min-h-screen lg:h-screen w-full bg-[#F8FAFC] overflow-x-hidden lg:overflow-hidden font-sans select-none">
       
       {/* ============================================================ */}
-      {/* LEFT PANEL: Hero Background Visual & Capabilities Overlay    */}
+      {/* LEFT PANEL: Pristine Cropped Hero Visual from Design (100%)  */}
       {/* ============================================================ */}
-      <div className="relative w-full lg:w-[66.4%] min-h-[520px] lg:h-screen bg-[#070D18] flex flex-col justify-between p-6 sm:p-10 lg:p-14 overflow-hidden flex-shrink-0">
-        
-        {/* Visual Background Image matching reference image 100% */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
-          style={{ backgroundImage: "url('/assets/login-hero-bg.png')" }}
+      <div className="relative w-full lg:w-[66.4%] min-h-[420px] lg:h-screen bg-[#070D18] overflow-hidden flex-shrink-0">
+        <img 
+          src="/assets/login-hero-bg.png" 
+          alt="NWIS — Nearby Wells Intelligence System" 
+          className="w-full h-full object-cover object-left select-none pointer-events-none"
         />
-
-        {/* Subtle Dark Gradient Overlay for optimal text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#070D18]/90 via-[#070D18]/40 to-[#070D18]/60 z-0 pointer-events-none" />
-
-        {/* Top Brand Logo */}
-        <div className="relative z-10 flex items-center justify-between">
-          <img 
-            src="/assets/nwis-logo-full.png" 
-            alt="NWIS - Nearby Wells Intelligence System" 
-            className="h-10 sm:h-11 w-auto object-contain"
-            onError={(e) => { e.target.src = '/assets/nwis-logo-dark.png'; }}
-          />
-        </div>
-
-        {/* Content Container (Headline & Subtext) */}
-        <div className="relative z-10 max-w-xl my-auto py-8 lg:py-0">
-          <h1 className="text-3xl sm:text-4xl lg:text-[48px] font-extrabold text-white tracking-tight leading-[1.15] font-display">
-            Turning <br />
-            <span className="text-[#00E5D9]">Drilling Experience</span> <br />
-            into Smarter Decisions
-          </h1>
-
-          <p className="text-slate-300 font-medium text-xs sm:text-sm lg:text-[15px] mt-4 leading-relaxed max-w-lg">
-            Access nearby wells, historical drilling events, operational knowledge and AI-driven insights to mitigate risks and improve well performance.
-          </p>
-        </div>
-
-        {/* Bottom Feature Cards (3 Overlay Cards from Reference Image) */}
-        <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-4">
-          
-          {/* Card 1: GIS Intelligence */}
-          <div className="bg-[#0A192F]/85 backdrop-blur-md border border-slate-700/50 rounded-xl p-3.5 flex items-center gap-3 shadow-lg hover:border-[#00E5D9]/40 transition-colors">
-            <div className="w-10 h-10 rounded-lg bg-[#00E5D9]/15 border border-[#00E5D9]/30 flex items-center justify-center flex-shrink-0">
-              <MapPin className="w-5 h-5 text-[#00E5D9]" />
-            </div>
-            <div>
-              <h4 className="text-xs sm:text-sm font-bold text-white leading-snug">
-                GIS Intelligence
-              </h4>
-              <p className="text-[11px] text-slate-300 leading-tight mt-0.5">
-                Nearby & offset well discovery
-              </p>
-            </div>
-          </div>
-
-          {/* Card 2: Knowledge Intelligence */}
-          <div className="bg-[#0A192F]/85 backdrop-blur-md border border-slate-700/50 rounded-xl p-3.5 flex items-center gap-3 shadow-lg hover:border-[#00E5D9]/40 transition-colors">
-            <div className="w-10 h-10 rounded-lg bg-[#00E5D9]/15 border border-[#00E5D9]/30 flex items-center justify-center flex-shrink-0">
-              <FileText className="w-5 h-5 text-[#00E5D9]" />
-            </div>
-            <div>
-              <h4 className="text-xs sm:text-sm font-bold text-white leading-snug">
-                Knowledge Intelligence
-              </h4>
-              <p className="text-[11px] text-slate-300 leading-tight mt-0.5">
-                Reports, events & historical data
-              </p>
-            </div>
-          </div>
-
-          {/* Card 3: Decision Support */}
-          <div className="bg-[#0A192F]/85 backdrop-blur-md border border-slate-700/50 rounded-xl p-3.5 flex items-center gap-3 shadow-lg hover:border-[#00E5D9]/40 transition-colors">
-            <div className="w-10 h-10 rounded-lg bg-[#00E5D9]/15 border border-[#00E5D9]/30 flex items-center justify-center flex-shrink-0">
-              <BarChart2 className="w-5 h-5 text-[#00E5D9]" />
-            </div>
-            <div>
-              <h4 className="text-xs sm:text-sm font-bold text-white leading-snug">
-                Decision Support
-              </h4>
-              <p className="text-[11px] text-slate-300 leading-tight mt-0.5">
-                Risk analysis & cross-well insights
-              </p>
-            </div>
-          </div>
-
-        </div>
-
+        <span className="sr-only">
+          NWIS — Nearby Wells Intelligence System — Turning Drilling Experience into Smarter Decisions. Access nearby wells, historical drilling events, operational knowledge and AI-driven insights to mitigate risks and improve well performance.
+        </span>
       </div>
 
       {/* ============================================================ */}
