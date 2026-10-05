@@ -19,8 +19,6 @@ services:
         value: "false"
       - key: API_PREFIX
         value: /api/v1
-      - key: PORT
-        value: "8000"
       - key: SUPABASE_URL
         value: https://seyocourjkgjjzlropgz.supabase.co
       - key: SUPABASE_ANON_KEY
@@ -32,4 +30,4 @@ services:
       - key: CORS_ORIGINS
         value: https://*.vercel.app,http://localhost:5173,http://localhost:3000
       - key: UPLOAD_DIR
-        value: ./uploads
+        value: /tmp/uploads
