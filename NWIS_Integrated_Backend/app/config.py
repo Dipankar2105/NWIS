@@ -87,7 +87,7 @@ class Settings(BaseSettings):
     # --- FILE UPLOAD ---
     MAX_UPLOAD_SIZE_MB: int = 25
     ALLOWED_FILE_TYPES: str | List[str] = "pdf,jpg,jpeg,png,tiff"
-    UPLOAD_DIR: str = "./uploads"
+    UPLOAD_DIR: str = "/tmp/uploads" if (os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME")) else "./uploads"
 
     # --- ALERTS ---
     ALERT_DEPTH_WINDOW_METERS: float = 300.0

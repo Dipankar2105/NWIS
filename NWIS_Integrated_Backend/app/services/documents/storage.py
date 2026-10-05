@@ -19,7 +19,11 @@ class DocumentStorage:
         self._ensure_upload_dir()
 
     def _ensure_upload_dir(self):
-        if not os.path.exists(self.upload_dir):
+        try:
+            if not os.path.exists(self.upload_dir):
+                os.makedirs(self.upload_dir, exist_ok=True)
+        except OSError:
+            self.upload_dir = "/tmp/uploads"
             os.makedirs(self.upload_dir, exist_ok=True)
 
     @staticmethod
