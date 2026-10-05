@@ -3,6 +3,7 @@ NWIS - Nearby Wells Intelligence System
 Application Configuration Module (Harmonized Architecture)
 """
 
+import os
 from functools import lru_cache
 from pathlib import Path
 from typing import List, Optional
