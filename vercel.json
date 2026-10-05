@@ -21,19 +21,19 @@
   "routes": [
     {
       "src": "/api/v1/(.*)",
-      "dest": "/api/index.py"
+      "dest": "https://nwis-backend.onrender.com/api/v1/$1"
     },
     {
       "src": "/health",
-      "dest": "/api/index.py"
+      "dest": "https://nwis-backend.onrender.com/health"
     },
     {
       "src": "/docs",
-      "dest": "/api/index.py"
+      "dest": "https://nwis-backend.onrender.com/docs"
     },
     {
       "src": "/openapi.json",
-      "dest": "/api/index.py"
+      "dest": "https://nwis-backend.onrender.com/openapi.json"
     },
     {
       "handle": "filesystem"
