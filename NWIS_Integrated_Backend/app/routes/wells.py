@@ -31,8 +31,8 @@ async def list_wells(
     filtered = []
     user_areas = current_user.operational_areas or []
     for w in all_wells:
-        if current_user.role != "super_admin":
-            if w.get("operational_area") not in user_areas:
+        if current_user.role not in ["super_admin", "admin", "drilling_engineer"]:
+            if w.get("operational_area") not in user_areas and not any(ua in (w.get("operational_area") or "") or (w.get("operational_area") or "") in ua for ua in user_areas):
                 continue
                 
         if area and area.lower() not in (w.get("operational_area", "") or "").lower():

@@ -15,11 +15,11 @@ from datetime import datetime
 router = APIRouter()
 
 def _check_event_access(event_well_id: str, current_user: UserProfile) -> bool:
-    if current_user.role == "super_admin":
+    if current_user.role in ["super_admin", "admin", "drilling_engineer"]:
         return True
     user_areas = current_user.operational_areas or []
     well = next((w for w in master_data_store.wells if w["id"] == event_well_id), None)
-    return well and well.get("operational_area") in user_areas
+    return well and (well.get("operational_area") in user_areas or any(ua in (well.get("operational_area") or "") for ua in user_areas))
 
 @router.get("", response_model=EventListResponse)
 async def list_events(

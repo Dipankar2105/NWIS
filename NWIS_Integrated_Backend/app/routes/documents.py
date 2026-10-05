@@ -287,7 +287,7 @@ async def list_documents(
     
     filtered = []
     for doc in combined:
-        if current_user.role != "super_admin":
+        if current_user.role not in ["super_admin", "admin", "drilling_engineer"]:
             if doc.well_id:
                 w_info = next((w for w in master_data_store.wells if w["id"] == doc.well_id), None)
                 w_area = w_info.get("operational_area") if w_info else None
