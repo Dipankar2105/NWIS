@@ -22,12 +22,12 @@ async def login(credentials: LoginRequest, db=Depends(get_db)):
     password = credentials.password
 
     # 1. Demo accounts / development test authentication
-    if email == "demo@oilindia.in" or email == "drilling.engineer@oilindia.in" or email.endswith("@oilindia.in") or not settings.is_supabase_configured:
+    if email in ["demo@nwis.ai", "demo@oilindia.in", "drilling.engineer@oilindia.in", "admin@nwis.ai"] or email.endswith("@oilindia.in") or email.startswith("demo@") or not settings.is_supabase_configured:
         demo_user = UserProfile(
             id="89a302b5-2202-41ec-a044-40a69fecbef2",
             email=email,
-            full_name="Demo Drilling Engineer" if email == "demo@oilindia.in" else email.split("@")[0].replace(".", " ").title(),
-            role="super_admin" if "admin" in email else "drilling_engineer",
+            full_name="Demo Drilling Engineer" if "drilling" in email or "demo" in email else email.split("@")[0].replace(".", " ").title(),
+            role="super_admin" if ("admin" in email or "super" in email) else "drilling_engineer",
             operational_areas=["Duliajan Field", "Moran Field", "Nahorkatiya Field"],
             department="Drilling Operations",
             employee_id="OIL-DR-2847",
